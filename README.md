@@ -21,6 +21,10 @@ run your private blockchain
 ## Usage
 ```run the following command in your terminal```
 
+    cd smart-contract
+
+    npm install
+
     npx hardhat compile
 
 ```run the following command in your terminal```
