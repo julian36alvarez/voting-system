@@ -35,7 +35,9 @@ copy the contract address and paste it in the index.html and electionDetail file
 
 ```run the index.html file in your browser```
 
+    npx install serve
 
+    npx serve frontend/
 
 Install metamask extension in your browser and create an account.
 
