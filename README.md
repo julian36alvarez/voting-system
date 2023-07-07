@@ -33,7 +33,7 @@ run your private blockchain
 
 copy the contract address and paste it in the index.html and electionDetail file in contractAddress variable
 
-```run the index.html file in your browser```
+```run server in the frontend folder```
 
     npx install serve
 
