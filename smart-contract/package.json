@@ -1,0 +1,34 @@
+{
+  "name": "voting-system",
+  "version": "1.0.0",
+  "description": "ECI Solidity voting system",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js",
+    "accounts": "npx hardhat accounts",
+    "balance": "npx hardhat balance"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julian36alvarez/voting-system.git"
+  },
+  "keywords": [
+    "Solidity",
+    "Blockchain",
+    "Voting",
+    "System"
+  ],
+  "author": "Julian Alvarez Villamil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/julian36alvarez/voting-system/issues"
+  },
+  "homepage": "https://github.com/julian36alvarez/voting-system#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "hardhat": "^2.16.1"
+  }
+}

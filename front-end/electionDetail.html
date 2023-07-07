@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap Example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Voting System - PSBE - ECI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Instructions
+                </button>
+            </div>
+        </div>
+    </nav>
+    <br />
+    <br />
+    <div class="container" style="display: none;" id="alertCont">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <p id="msgAlert"></p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    <div class="container" id="alertContBtn" style="display: none;">
+        <button class="btn btn-success " onclick="connect()">Connect</button>
+    </div>
+
+
+    <div class="container">
+
+        <div class="card">
+            <div class="card-body">
+                <h4 id="timeStart" class="text-center"></h4>
+                <br />
+                <h4 id="timeEnd" class="text-center"></h4>
+            </div>
+        </div>
+
+    </div>
+
+    <br />
+    <div class="container">
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="estadoActual"></li>
+                <li class="list-group-item" id="balance"></li>
+                <li class="list-group-item">
+                    <div style="display: flex;">
+                        <button class="btn btn-success" id="subscribing" onclick="startSubscribing()"
+                            style="display: none; flex: 1;">Start Subscribing</button>
+                        <button class="btn btn-warning" id="inscribirme" onclick="subscribe()"
+                            style="display: none; flex: 1;">I want to participate</button>
+                        <button class="btn btn-success" id="initVotacion" onclick="startVoting()"
+                            style="display: none; flex: 1;">Init Voting</button>
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Cats</h5>
+                        <p class="card-text">Vote for cats.</p>
+                        <a class="btn btn-primary votacionElemnto" style="display: none;" onclick="vote(0)">Cats</a>
+                    </div>
+                    <h1 id="votosCats" class="text-center"></h1>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Dogs</h5>
+                        <p class="card-text">Vote for dogs.</p>
+                        <a class="btn btn-primary votacionElemnto" style="display: none;" onclick="vote(1)">Dogs</a>
+                    </div>
+                    <h1 id="votosDos" class="text-center"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Instructions</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>To use this application you must follow the following steps:</p>
+                    <ul>
+                        <li>1. Install the Metamask plugin in your browser.</li>
+                        <li>2. Start the plugin creating an account.</li>
+                        <li>3. Add a new network in Metamask with the following data:</li>
+                        <ul>
+                            <li>Network Name: OLX ECI Testnet</li>
+                            <li>New RPC URL: http://127.0.0.1:8545</li>
+                            <li>ChainID: 5342</li>
+                            <li>Symbol: OLX</li>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="alertModalLabel">Instructions</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    please connect to metamask
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+
+    <script type="text/javascript">
+        let web3;
+        let electionAbi = [{"inputs": [{"internalType": "string[]", "name": "_options", "type": "string[]"}, {"internalType": "uint256", "name": "_subscriptionPayment", "type": "uint256"}, {"internalType": "address", "name": "_manager", "type": "address"}], "stateMutability": "payable", "type": "constructor"}, {"anonymous": false, "inputs": [{"indexed": false, "internalType": "address", "name": "addr", "type": "address"}, {"indexed": false, "internalType": "enum VotingSystem.State", "name": "newState", "type": "uint8"}], "name": "StateChanged", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "internalType": "address", "name": "addr", "type": "address"}, {"indexed": false, "internalType": "address", "name": "userAddress", "type": "address"}, {"indexed": false, "internalType": "uint256", "name": "totalSubscriptions", "type": "uint256"}], "name": "UserSubscribed", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "internalType": "address", "name": "addr", "type": "address"}, {"indexed": false, "internalType": "address", "name": "userAddress", "type": "address"}, {"indexed": false, "internalType": "uint256", "name": "totalVotes", "type": "uint256"}, {"indexed": false, "internalType": "uint256[]", "name": "votes", "type": "uint256[]"}], "name": "UserVoted", "type": "event"}, {"inputs": [], "name": "closeElection", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "getBalance", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getHasSubscribed", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getHasVoted", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getManager", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getOptions", "outputs": [{"internalType": "string[]", "name": "", "type": "string[]"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getOwner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getState", "outputs": [{"internalType": "enum VotingSystem.State", "name": "", "type": "uint8"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getSubscriptions", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getTimeEnd", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getTimeStart", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getTotalVotes", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "getVotes", "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "startSubscribing", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "startVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "stopVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "subscribe", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "timeEnd", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "timeStart", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "uint256", "name": "option", "type": "uint256"}], "name": "vote", "outputs": [], "stateMutability": "nonpayable", "type": "function"}]
+        let contractAddress = "0x47d1F1860a9E34dC8f3B3A05acA168a78DF298c0";
+        const allowedProviders = ["0x64", "0x4d", "0x539", "0x14de"];
+        const stateLabel = ["Iniciado", "Subscripciones", "Votaciones", "Resultados"];
+
+        var Election = /** @class */ (function () {
+            function Election() {
+                this.address = "";
+                this.owner = "";
+                this.manager = "";
+                this.state = 0;
+                this.options = [];
+                this.subscriptions = 0;
+                this.totalVotes = 0;
+                this.votes = [];
+                this.hasSubscribed = false;
+                this.hasVoted = false;
+                this.balance = 0;
+                this.timeStart = 0;
+                this.timeEnd = 0;
+            }
+            return Election;
+        }());
+
+        const data = {
+            provider: {},
+            web3: {},
+            electionContract: {},
+            accounts: [],
+            currentAccount: "",
+            election: Election,
+            showErrorAlert: false,
+            errorAlertMessage: "",
+            gatosDialog: false,
+            perrosDialog: false,
+            tieDialog: false,
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const addressParameter = urlParams.get('id');
+        console.log(addressParameter);
+
+
+
+        async function loadWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+            } else {
+                alert("No Ethereum provider found!");
+            }
+        }
+
+        function getStateLabel(state) {
+            if (state < stateLabel.length) {
+                return stateLabel[state];
+            } else {
+                console.log(`No se reconoce el estado: ${data.election.state}`);
+                return "Desconocido";
+            }
+        }
+
+        async function getContract() {
+            const {web3, currentAccount} = data;
+            const contractAddress = web3.utils.toChecksumAddress(addressParameter);
+            data.electionContract = new web3.eth.Contract(electionAbi, contractAddress, {from: currentAccount});
+
+            data.election = new Election();
+            data.election.owner = await data.electionContract.methods.getOwner().call();
+            data.election.manager = await data.electionContract.methods.getManager().call();
+            data.election.state = Number(await data.electionContract.methods.getState().call());
+
+            const estadoActual = document.getElementById("estadoActual");
+            estadoActual.innerHTML = `Estado: ${getStateLabel(data.election.state)}`;
+
+            switch (data.election.state) {
+                case 0:
+                    document.getElementById("subscribing").style.display = "block";
+                    break;
+                case 1:
+                    data.election.hasSubscribed = await data.electionContract.methods.getHasSubscribed().call();
+                    if (!data.election.hasSubscribed) {
+                        document.getElementById("inscribirme").style.display = "block";
+                    }
+                    document.getElementById("initVotacion").style.display = "block";
+                    console.log(getVotes(0), getVotes(1));
+                    break;
+                case 2:
+                    const buttonVotacion = document.getElementsByClassName("votacionElemnto");
+                    console.log(getVotes(0), getVotes(1));
+                    for (let i = 0; i < buttonVotacion.length; i++) {
+                        buttonVotacion[i].style.display = "block";
+                    }
+                    break;
+                case 3:
+                    data.election.votes = await data.electionContract.methods.getVotes().call();
+                    if (Number(data.election.votes[0]) > Number(data.election.votes[1])) {
+                        data.gatosDialog = true;
+                    } else if (Number(data.election.votes[0]) < Number(data.election.votes[1])) {
+                        data.perrosDialog = true;
+                    } else {
+                        data.tieDialog = true;
+                    }
+                    document.getElementById("votosCats").innerHTML = `Total Cat Votes: ${getVotes(0)}`;
+                    document.getElementById("votosDos").innerHTML = `Total Dog Votes: ${getVotes(1)}`;
+                    break;
+            }
+
+            data.election.options = await data.electionContract.methods.getOptions().call();
+            data.election.subscriptions = await data.electionContract.methods.getSubscriptions().call();
+            data.election.totalVotes = await data.electionContract.methods.getTotalVotes().call();
+            data.election.votes = await data.electionContract.methods.getVotes().call();
+            data.election.hasSubscribed = await data.electionContract.methods.getHasSubscribed().call();
+            console.log(data.election.hasSubscribed);
+            data.election.hasVoted = await data.electionContract.methods.getHasVoted().call();
+            data.election.balance = await data.electionContract.methods.getBalance().call();
+            document.getElementById("balance").innerHTML = `Balance: ${toEher(data.election.balance)}`;
+
+            data.election.timeStart = await data.electionContract.methods.getTimeStart().call();
+            data.election.timeEnd = await data.electionContract.methods.getTimeEnd().call();
+            document.getElementById("timeStart").innerHTML = `TimeStart: ${new Date(data.election.timeStart * 1000)}`;
+            document.getElementById("timeEnd").innerHTML = `TimeEnd: ${new Date(data.election.timeEnd * 1000)}`;
+
+            data.electionContract.events.StateChanged({}, onStateChanged);
+            data.electionContract.events.UserSubscribed({}, onUserSubscribed);
+            data.electionContract.events.UserVoted({}, onUserVoted);
+        }
+
+
+        function onElectionsUpdated(error, event) {
+            const lastElectionsUpdate = event.returnValues.elections
+                .slice(Math.max(event.returnValues.elections.length - 3, 0))
+                .reverse();
+            data.elections = buildElections(lastElectionsUpdate);
+        }
+
+        async function onStateChanged(error, event) {
+            data.election.state = Number(event.returnValues.newState);
+            if (data.election.state === 3) {
+                data.election.votes = await data.electionContract.methods.getVotes().call();
+                if (Number(data.election.votes[0]) > Number(data.election.votes[1])) {
+                    data.gatosDialog = true;
+                } else if (
+                    Number(data.election.votes[0]) < Number(data.election.votes[1])
+                ) {
+                    data.perrosDialog = true;
+                } else {
+                    data.tieDialog = true;
+                }
+            }
+        }
+
+        async function onUserSubscribed(error, event) {
+            data.election.subscriptions = event.returnValues.totalSubscriptions;
+            data.election.hasSubscribed = await data.electionContract.methods
+                .getHasSubscribed()
+                .call();
+            data.election.balance = await data.electionContract.methods
+                .getBalance()
+                .call();
+        }
+
+
+        async function onUserVoted(error, event) {
+            data.election.totalVotes = event.returnValues.totalVotes;
+            data.election.votes = event.returnValues.votes;
+            data.election.hasVoted = await data.electionContract.methods
+                .getHasVoted()
+                .call();
+        }
+
+
+        async function preLoad() {
+            data.provider = await detectEthereumProvider();
+            data.provider.on("accountsChanged", onAccountsChange);
+
+            if (!data.provider) {
+                alert(
+                    "Debes tener el plugin de Metamask instalado para poder usar esta aplicación."
+                );
+                return;
+            }
+
+            data.web3 = new Web3(Web3.givenProvider);
+            data.accounts = await data.provider.request({method: "eth_accounts"});
+            handleAccountsChanged(data.accounts);
+
+            if (!allowedProviders.includes(data.provider.chainId)) {
+                console.log("ChainID: " + data.provider.chainId);
+                alert(
+                    "Debes conectarte a la red privada OLX para poder usar esta aplicación."
+                );
+            }
+        }
+
+        async function onAccountsChange() {
+            data.accounts = await data.provider.request({method: "eth_accounts"});
+            data.currentAccount = "";
+            await handleAccountsChanged(data.accounts);
+        }
+
+        async function handleAccountsChanged(accounts) {
+            let alertCont = document.getElementById("alertCont");
+            let alertContBtn = document.getElementById("alertContBtn");
+            let msgAlert = document.getElementById("msgAlert");
+
+            if (accounts.length === 0) {
+                alertCont.style.display = "block";
+                alertContBtn.style.display = "block";
+                msgAlert.innerHTML = "";
+                msgAlert.innerHTML = "please connect to metamask";
+                return;
+            } else {
+                alertCont.style.display = "none";
+                alertContBtn.style.display = "none";
+            }
+
+            if (accounts[0] !== data.currentAccount) {
+                data.currentAccount = data.web3.utils.toChecksumAddress(accounts[0]);
+                console.log(`connected with account ${data.currentAccount}`);
+                getContract();
+            }
+
+
+        }
+
+        async function startSubscribing() {
+            try {
+                await data.electionContract.methods
+                    .startSubscribing()
+                    .send({from: data.currentAccount});
+
+                data.election.state = Number(
+                    await data.electionContract.methods.getState().call()
+                );
+
+                await reloadMetamask();
+            } catch (error) {
+                if (error.message.includes("Invalid State")) {
+                    alert(inWrongStateError(0));
+                } else if (error.message.includes("Not a manager")) {
+                    alert(authorizeError);
+                }
+            }
+        }
+
+        async function subscribe() {
+            data.electionContract.methods.subscribe().send({from: data.currentAccount});
+            await reloadMetamask();
+        }
+
+        async function startVoting() {
+            try {
+                await data.electionContract.methods
+                    .startVoting()
+                    .send({from: data.currentAccount});
+
+                data.election.state = Number(
+                    await data.electionContract.methods.getState().call()
+                );
+                reloadMetamask();
+            } catch (error) {
+                if (error.message.includes("Invalid State")) {
+                    alert(inWrongStateError(1));
+                } else if (error.message.includes("Not a manager")) {
+                    alert(authorizeError);
+                }
+            }
+        }
+
+
+
+        async function vote(value) {
+            data.electionContract.methods.vote(value).send({from: data.currentAccount});
+            await reloadMetamask();
+        }
+
+
+        function toEher(value) {
+            if (!value) {
+                return 0;
+            }
+            return data.web3.utils.fromWei(String(value), "ether");
+        }
+
+
+        function buildElections(electionAddresses) {
+            return electionAddresses.map((richElection) => {
+                const election = new Election();
+                election.address = richElection[0];
+                election.manager = richElection[1];
+                return election;
+            });
+        }
+
+        async function connect() {
+            if (!data.provider) {
+                alert(
+                    "You must have the Metamask plugin installed to use this application."
+                );
+                return;
+            }
+            data.accounts = await data.provider.request({
+                method: "eth_requestAccounts",
+            });
+            handleAccountsChanged(data.accounts);
+        }
+
+        async function reloadMetamask() {
+            data.web3.eth.subscribe('confirmation', (confirmationNumber, receipt) => {
+                console.log('confirmationNumber', confirmationNumber);
+                console.log('receipt', receipt);
+                window.location.reload();
+            });
+        }
+
+        function getVotes(option) {
+            console.log(data.election.votes);
+            if (
+                Array.isArray(data.election.votes) &&
+                option < data.election.votes.length
+            ) {
+                return data.election.votes[option];
+            }
+            return 0;
+        }
+
+        preLoad();
+    </script>
+</body>
+
+</html>

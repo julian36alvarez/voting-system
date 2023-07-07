@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap Example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Voting System - PSBE - ECI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Instructions
+                </button>
+            </div>
+        </div>
+    </nav>
+    <br />
+    <br />
+    <div class="container" style="display: none;" id="alertCont">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <p id="msgAlert"></p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    <div class="container" id="alertContBtn" style="display: none;">
+        <button class="btn btn-success " onclick="connect()">Connect</button>
+    </div>
+
+
+
+
+    <div class="container">
+        <div class="alert card">
+            <div class="card-body">
+                <p>Welcome to the Voting System</p>
+                <p>Here you can vote for your favourite candidate and see the results</p>
+                <p>You can choise only one candidate, Cats or Dogs</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>Actions:</h3>
+        <br />
+        <button class="btn btn-primary" onclick="createElection()">Start new election</button>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="container">
+        <h3>Election Results:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                <tr class="table-dark">
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Instructions</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>To use this application you must follow the following steps:</p>
+                    <ul>
+                        <li>1. Install the Metamask plugin in your browser.</li>
+                        <li>2. Start the plugin creating an account.</li>
+                        <li>3. Add a new network in Metamask with the following data:</li>
+                        <ul>
+                            <li>Network Name: OLX ECI Testnet</li>
+                            <li>New RPC URL: http://127.0.0.1:8545</li>
+                            <li>ChainID: 5342</li>
+                            <li>Symbol: OLX</li>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="alertModalLabel">Instructions</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    please connect to metamask
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+
+    <script type="text/javascript">
+        let web3;
+        let contractABI = [{"anonymous": false, "inputs": [{"indexed": false, "internalType": "address", "name": "addr", "type": "address"}, {"components": [{"internalType": "contract VotingSystem", "name": "election", "type": "address"}, {"internalType": "address", "name": "manager", "type": "address"}], "indexed": false, "internalType": "struct VotingSystemFactory.RichVotingSystem[]", "name": "elections", "type": "tuple[]"}], "name": "VotingSystemUpdated", "type": "event"}, {"inputs": [{"internalType": "string[]", "name": "options", "type": "string[]"}, {"internalType": "uint256", "name": "subscriptionPayment", "type": "uint256"}, {"internalType": "address", "name": "manager", "type": "address"}], "name": "createElection", "outputs": [], "stateMutability": "payable", "type": "function"}, {"inputs": [], "name": "getElections", "outputs": [{"components": [{"internalType": "contract VotingSystem", "name": "election", "type": "address"}, {"internalType": "address", "name": "manager", "type": "address"}], "internalType": "struct VotingSystemFactory.RichVotingSystem[]", "name": "", "type": "tuple[]"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "uint256", "name": "index", "type": "uint256"}], "name": "removeElection", "outputs": [], "stateMutability": "nonpayable", "type": "function"}]
+        let contractAddress = "0x47d1F1860a9E34dC8f3B3A05acA168a78DF298c0";
+        const allowedProviders = ["0x64", "0x4d", "0x539", "0x14de"];
+
+        var Election = /** @class */ (function () {
+            function Election() {
+                this.address = "";
+                this.owner = "";
+                this.manager = "";
+                this.state = 0;
+                this.options = [];
+                this.subscriptions = 0;
+                this.totalVotes = 0;
+                this.votes = [];
+                this.hasSubscribed = false;
+                this.hasVoted = false;
+                this.balance = 0;
+                this.timeStart = 0;
+                this.timeEnd = 0;
+            }
+            return Election;
+        }());
+
+        const data = {
+            contractBudget: 0.001,
+            subscriptionValue: 0.0005,
+            valid: true,
+            provider: {},
+            web3: {},
+            electionFactoryContract: {},
+            accounts: [],
+            currentAccount: "",
+            elections: [],
+            showErrorAlert: false,
+            errorAlertMessage: "",
+            instructionsDialog: false,
+        };
+
+
+        async function createElection() {
+            await data.electionFactoryContract.methods
+                .createElection(
+                    ["Perros", "Gatos"],
+                    data.web3.utils.toWei(String(data.subscriptionValue), "ether"),
+                    data.currentAccount
+                )
+                .send({
+                    from: data.currentAccount,
+                    value: data.web3.utils.toWei(String(data.contractBudget), "ether"),
+                });
+            await reloadMetamask();
+        }
+
+        async function loadWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+            } else {
+                alert("No Ethereum provider found!");
+            }
+        }
+
+        async function getContract() {
+            data.electionFactoryContract = new data.web3.eth.Contract(
+                contractABI,
+                data.web3.utils.toChecksumAddress(contractAddress),
+                {from: data.currentAccount}
+            );
+            data.electionFactoryContract.events.VotingSystemUpdated({}, onElectionsUpdated);
+        }
+
+
+        function onElectionsUpdated(error, event) {
+            const lastElectionsUpdate = event.returnValues.elections
+                .slice(Math.max(event.returnValues.elections.length - 3, 0))
+                .reverse();
+            data.elections = buildElections(lastElectionsUpdate);
+        }
+
+
+        async function preLoad() {
+            data.provider = await detectEthereumProvider();
+            data.provider.on("accountsChanged", onAccountsChange);
+
+            if (!data.provider) {
+                alert(
+                    "Debes tener el plugin de Metamask instalado para poder usar esta aplicación."
+                );
+                return;
+            }
+
+            data.web3 = new Web3(Web3.givenProvider);
+            data.accounts = await data.provider.request({method: "eth_accounts"});
+            handleAccountsChanged(data.accounts);
+
+            if (!allowedProviders.includes(data.provider.chainId)) {
+                console.log("ChainID: " + data.provider.chainId);
+                alert(
+                    "Debes conectarte a la red privada OLX para poder usar esta aplicación."
+                );
+            }
+        }
+
+        async function onAccountsChange() {
+            data.accounts = await data.provider.request({method: "eth_accounts"});
+            data.currentAccount = "";
+            await handleAccountsChanged(data.accounts);
+        }
+
+        async function handleAccountsChanged(accounts) {
+            let alertCont = document.getElementById("alertCont");
+            let alertContBtn = document.getElementById("alertContBtn");
+            let msgAlert = document.getElementById("msgAlert");
+
+            if (accounts.length === 0) {
+                alertCont.style.display = "block";
+                alertContBtn.style.display = "block";
+                msgAlert.innerHTML = "";
+                msgAlert.innerHTML = "please connect to metamask";
+                return;
+            } else {
+                alertCont.style.display = "none";
+                alertContBtn.style.display = "none";
+            }
+
+            if (accounts[0] !== data.currentAccount) {
+                data.currentAccount = data.web3.utils.toChecksumAddress(accounts[0]);
+                console.log(`connected with account ${data.currentAccount}`);
+                getContract();
+                await getElections();
+            }
+        }
+
+        async function getElections() {
+            const electionAddresses = await data.electionFactoryContract.methods
+                .getElections()
+                .call();
+
+            if (electionAddresses === null) {
+                data.elections = [];
+                return;
+            }
+            data.elections = buildElections(electionAddresses);
+            console.log(`elections: ${JSON.stringify(data.elections)}`);
+            console.log(`election addresses: ${JSON.stringify(electionAddresses)}`);
+
+            if (data.elections.length > 0) {
+                generateTable();
+            }
+        }
+
+
+        function goToDetail(address) {
+            window.location.href = "/electionDetail?id=" + address;
+        }
+
+        function generateTable() {
+            const tableBody = document.querySelector(".table tbody");
+            let html = "";
+            for (const election of data.elections) {
+                console.log(`election: ${JSON.stringify(election)}`);
+                html += `
+            <tr>
+                <td>${JSON.stringify(election.address)}</td>
+                <td><button class="btn btn-success" onclick="goToDetail('${election.address}')">Details</button></td>
+                
+            </tr>
+            `;
+            }
+            html += `
+            <tr class="table-dark">
+            <td>Number of elections</td>
+            <td>${data.elections.length}</td>
+            </tr>
+        `;
+            tableBody.innerHTML = html;
+        }
+
+        function buildElections(electionAddresses) {
+            return electionAddresses.map((richElection) => {
+                const election = new Election();
+                election.address = richElection[0];
+                election.manager = richElection[1];
+                return election;
+            });
+        }
+
+        async function connect() {
+            if (!data.provider) {
+                alert(
+                    "You must have the Metamask plugin installed to use this application."
+                );
+                return;
+            }
+            data.accounts = await data.provider.request({
+                method: "eth_requestAccounts",
+            });
+            handleAccountsChanged(data.accounts);
+        }
+
+
+        async function reloadMetamask() {
+            data.web3.eth.subscribe('confirmation', (confirmationNumber, receipt) => {
+                console.log('confirmationNumber', confirmationNumber);
+                console.log('receipt', receipt);
+                window.location.reload();
+            });
+        }
+        preLoad();
+    </script>
+</body>
+
+</html>
